@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>家計簿アプリ</title>
+</head>
+<body>
+
+<h2>Firebase 家計簿デモ</h2>
+
+<button id="loginBtn">Google ログイン</button>
+<button id="logoutBtn">ログアウト</button>
+
+<hr>
+
+<h3>データ登録</h3>
+<input id="date" type="date">
+<input id="category" type="text" placeholder="カテゴリ">
+<input id="amount" type="number" placeholder="金額">
+<button onclick="addRecord()">登録</button>
+
+<hr>
+
+<h3>データ表示</h3>
+<button onclick="loadData()">最新データ取得</button>
+<pre id="records"></pre>
+
+<h3>合計金額</h3>
+<button onclick="calcTotal()">合計を計算</button>
+<div id="total"></div>
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } 
+  from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs } 
+  from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+/* ▼▼▼ あなたの FirebaseConfig をここに貼る ▼▼▼ */
+const firebaseConfig = {
+  apiKey: "AIzaSyATXLdNYTvmlMa0jhsBXXTtxMm5fHVmZ6s",
+  authDomain: "kakeibo-f73fc.firebaseapp.com",
+  projectId: "kakeibo-f73fc",
+  storageBucket: "kakeibo-f73fc.firebasestorage.app",
+  messagingSenderId: "64975489834",
+  appId: "1:64975489834:web:19ac6c76d85e5769f8ac53",
+  measurementId: "G-7C1M3B338Y"
+};
+/* ▲▲▲ ここまで ▲▲▲ */
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ログイン処理
+document.getElementById("loginBtn").onclick = async () => {
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(auth, provider);
+    alert("ログイン成功");
+};
+
+// ログアウト
+document.getElementById("logoutBtn").onclick = () => {
+    signOut(auth);
+    alert("ログアウトしました");
+};
+
+// データ登録
+async function addRecord(){
+    if (!auth.currentUser) {
+        alert("ログインしてください");
+        return;
+    }
+
+    const record = {
+        uid: auth.currentUser.uid,
+        date: document.getElementById("date").value,
+        category: document.getElementById("category").value,
+        amount: Number(document.getElementById("amount").value),
+    };
+
+    await addDoc(collection(db, "kakeibo"), record);
+    alert("登録完了");
+}
+
+// データ取得
+async function loadData(){
+    const uid = auth.currentUser?.uid;
+    if (!uid) {
+        alert("ログインしてください");
+        return;
+    }
+
+    const snap = await getDocs(collection(db, "kakeibo"));
+    const list = [];
+    snap.forEach(doc => {
+        const d = doc.data();
+        if (d.uid === uid) list.push(d);
+    });
+
+    document.getElementById("records").textContent = JSON.stringify(list, null, 2);
+}
+
+// 合計計算
+async function calcTotal(){
+    const uid = auth.currentUser?.uid;
+    if (!uid) {
+        alert("ログインしてください");
+        return;
+    }
+
+    const snap = await getDocs(collection(db, "kakeibo"));
+    let total = 0;
+    snap.forEach(doc => {
+        const d = doc.data();
+        if (d.uid === uid) total += d.amount;
+    });
+
+    document.getElementById("total").textContent = "合計：" + total + " 円";
+}
+</script>
+
+</body>
+</html>

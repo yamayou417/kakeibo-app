@@ -1,0 +1,66 @@
+<div class="d-flex justify-content-center">
+    <h2 class="mt-3">家計簿</h2>
+</div>
+<div class="col-10 mx-auto">
+    <div class="row">
+        <table class="table">
+        <thead>
+            <tr>
+            <th scope="col">日付</th>
+            <th scope="col">カテゴリー</th>
+            <th scope="col">収入</th>
+            <th scope="col">支出</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+</div>
+<footer class="footer">]
+    <div class="position-relative">
+        <div class="fixed-bottom d-flex justify-content-center m-3">
+            <button type="button" id="InputBtn" class="btn btn-success w-50" data-bs-toggle="modal" data-bs-target="#registerModal" >入力</button>
+        </div>
+    </div>
+</footer>
+<div class="modal fade" id="registerModal" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- モーダルヘッダー -->
+            <div class="modal-header">
+            <h5 class="modal-title">収支出登録</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <!-- モーダルボディ（入力フォーム） -->
+        <div class="modal-body">
+        <form id="modalForm">
+            <div class="mb-3">
+                <label class="form-label">日付</label>
+                <input type="date" class="form-control" id="dateInput">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">カテゴリー</label>
+                <input type="text" class="form-control" id="categoryInput">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">収入</label>
+                <input type="number" class="form-control" id="incomeInput">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">支出</label>
+                <input type="number" class="form-control" id="expenseInput">
+            </div>
+            <button type="button" class="btn btn-primary" id="registerBtn">登録</button>
+            <button type="button" class="btn btn-primary" id="cancelBtn">キャンセル</button>
+        </form>
+    </div>
+</div>
+<!-- Bootstrap関連 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<script>
+
+</script>
+
+<script src="main.js"></script>
